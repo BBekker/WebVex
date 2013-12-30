@@ -1,0 +1,159 @@
+<!--
+/***
+ * Vex webgl port
+ * Autor: Bernard Bekker
+ * Year: 2013
+ *
+ * This code is shared under the:
+ * Creative Commons Attribution-NonCommercial 4.0 International Public License
+ *
+ * http://creativecommons.org/licenses/by-nc/4.0/deed.en_US
+ *
+ */
+ -->
+
+<!DOCTYPE html>
+<HTML>
+<head>
+    <title>Vex</title>
+
+    <script id="vertex" type="x-shader">
+        attribute vec2 aVertexPosition;
+        uniform mat4 uTransformation;
+        uniform mat4 uAspectTransformation;
+
+        void main() {
+                gl_Position = uAspectTransformation*uTransformation * vec4(aVertexPosition, 0.0, 1.0);
+        }
+    </script>
+    <script id="fragment" type="x-shader">
+        #ifdef GL_ES
+        precision highp float;
+        #endif
+
+        uniform vec4 uColor;
+
+        void main() {
+                gl_FragColor = uColor;
+        }
+    </script>
+
+    <link rel="stylesheet" href="css.css" />
+    <script src="ui.js"></script>
+    <script src="glMatrix.js"></script>
+    <script src="game.js"></script>
+    <script src="renderer.js" ></script>
+
+
+
+
+</head>
+<body onload="UI.init()">
+
+<div id="introcontainer" class="container">
+    VEX
+    <br/><br/>
+    Welcome to vex, the 2D party space shooter.
+    <br/>
+    <br/>
+
+    Players:
+    <div class="intro_player_selection">
+        <div class="intro_player" id="intro_player_1">
+            <span class="intro_name">
+                player 1
+            </span>
+            <input type="text" name="player_name_1" placeholder="player name">
+            <div id="intro_color">
+
+            </div>
+            <div id="intro_controls">
+
+                Move: arrow-keys </br>
+                Shoot: numpad-0
+            </div>
+        </div>
+        <div class="intro_player" id="intro_player_2">
+            <span class="intro_name">
+                player 2
+            </span>
+            <input type="text" name="player_name_2" placeholder="player name">
+            <div id="intro_color">
+
+            </div>
+            <div id="intro_controls">
+                Move: WASD </br>
+                Shoot: Shift
+            </div>
+        </div>
+        <div class="intro_player inactive" id="intro_player_3">
+            <span class="intro_name">
+                player 3
+            </span>
+            <input type="text" name="player_name_3" placeholder="player name">
+
+            inactive
+        </div>
+        <div class="intro_player inactive" id="intro_player_4">
+            <span class="intro_name">
+                player 4
+            </span>
+            <input type="text" name="player_name_4" placeholder="player name">
+
+            inactive
+        </div>
+        <div class="intro_player inactive" id="intro_player_5">
+            <span class="intro_name">
+                player 5
+            </span>
+            <input type="text" name="player_name_5" placeholder="player name">
+
+            inactive
+        </div>
+
+    </div>
+
+    <br/>
+    <button type="button" onclick="startGame()">Start the game!</input>
+</div>
+
+<div id="resultcontainer" class="container" style="visibility: hidden">
+    <span id="winning_player"></span> won!
+    <div id="results"></div>
+    <br/>
+    Play Again?
+</div>
+
+<div id="gamecontainer" class="container">
+    <div id="scoreboard">
+    </div>
+    <div id="fps"></div>
+    <canvas id="vex-canv" width="1000" height="800">
+        je browser zuigt.
+    </canvas>
+    <div id="player_list" class="player_list">
+
+    </div>
+</div>
+
+
+
+<div class="hidden">
+    <div id="proto_player_list_item" class="player_list_item">
+        <span id="name" class="player_name">
+            player
+        </span>
+        <br/>
+        <span id="score" class="player_score">
+            234
+        </span>
+        <div class="hp_border">
+            <div id="hp" class="player_hp">
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</HTML>
