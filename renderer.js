@@ -21,12 +21,16 @@ renderer.init = function init(){
 
     //get canvas
     canvas = document.getElementById("vex-canv");
+    //fix canvas
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+
     //get gl context
-    gl = canvas.getContext("experimental-webgl");
+    gl = canvas.getContext("experimental-webgl") || canvas.getContext("webgl");
     //view port
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.aspect = canvas.width / canvas.height;
-
+    console.log("width "+canvas.width+" height:"+canvas.height);
     gl.aspectTransform = mat4.identity(mat4.create());
     mat4.scale(gl.aspectTransform, vec3.create([2.0/canvas.width,2.0/canvas.height,1]));
 

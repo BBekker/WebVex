@@ -24,6 +24,17 @@ body{
 #gamecontainer{
     visibility: hidden;
     background: url("back.jpg");
+    bottom:5px;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    margin-left: 0px;
+}
+
+#vex-canv{
+    position: relative;
+    height: 100%;
+    width: 100%;
 }
 
 .container{
@@ -46,7 +57,7 @@ body{
     z-index: 1;
 }
 
-#introcontainer {
+#menucontainer {
     font-family: monospace;
     font-size: 15pt;
     color: white;
@@ -89,6 +100,10 @@ body{
 
 .inactive{
     opacity: 0.3;
+}
+
+.inactive:hover{
+    opacity: 0.8;
 }
 
 #fps{
@@ -161,6 +176,11 @@ body{
     background-color: green;
     height: 100%;
     transition: 100ms;
+}
+
+.player_hp{
+    position: absolute;
+
 }
 
 #player_0{

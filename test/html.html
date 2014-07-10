@@ -1,0 +1,60 @@
+<html>
+<head>
+    <script type="application/javascript">
+        //Websocket test
+
+        var channel = window.location.hash.slice(1);
+        var websocket;
+        function load(){
+            websocket = new WebSocket("ws://vps.bernardbekker.nl:8080");
+
+            websocket.onopen = function(){
+                console.log("con opened");
+                websocket.send(JSON.stringify({type:"cmd", cmd:"channel", data: channel}));
+                websocket.send(JSON.stringify({type: "cmd", cmd:"gmsg"}));
+            }
+
+            websocket.onmessage = function(msg){
+                receive(msg.data);
+            }
+
+            document.getElementById("channel").textContent = channel;
+        }
+
+        function receive(json){
+            msg = JSON.parse(json);
+            if(msg.type == "msg"){
+                document.getElementById("received").textContent = msg.msg;
+            }
+            if(msg.type == "response"){
+                if(msg.cmd == "users"){
+                    document.getElementById("clients").textContent = msg.data;
+                }
+            }
+        }
+
+        function changeChannel(chan){
+            channel = chan;
+            websocket.send(JSON.stringify({type:"cmd", cmd:"channel", data: channel}));
+            document.getElementById("channel").textContent = channel;
+        }
+
+        function send(){
+            var msg = document.getElementById("input").value;
+            var json = {type: "msg" , msg: msg};
+
+            websocket.send(JSON.stringify(json));
+        }
+
+    </script>
+</head>
+<body onload="load()">
+	<pre>
+	Websocket test
+    channel: <span id="channel"></span> <button onclick="changeChannel(prompt('channel'))">change</button>
+    Received: <span id="received">nothing :(</span>
+    Send: <input type="text" id="input" placeholder="message" ></input>
+    <button onclick="send()">Send</button>
+    Clients on channel: <span id="clients"></span>
+	</pre>
+</body>

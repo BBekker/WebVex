@@ -14,34 +14,20 @@ UI = {};
 
 UI.init = function(){
 
-
-}
-
-function startGame(){
-
-    var playername1 = document.querySelector('[name="player_name_1"]').value || "player 1";
-    var playername2 = document.querySelector('[name="player_name_2"]').value || "player 2";
-
-
-    //set visible
-    document.getElementById("gamecontainer").setAttribute("style","visibility:visible")
-    document.getElementById("introcontainer").setAttribute("hidden","true");
-
-    //add players
-    var player = new Player(playername1,new Ship(1,[-100.0,-100.0,0.0],1.5),null,colors[0]);
-    var player2 = new Player(playername2,new Ship(1,[100.0,100.0,0.0],5), [87,83,65,68,16],colors[1]);
-
-    //start game!
-    vex.init();
+    //setup UI elements
     UI.Scoreboard.update();
 
+    UI.PlayerList.reset();
     UI.PlayerList.init();
     vex.players.forEach(function(p){
         UI.PlayerList.addPlayer(p);
     });
 
     window.setInterval(UI.PlayerList.update,250);
+
 }
+
+
 
 //Called when the game is finished
 function gameFinished(){
@@ -51,7 +37,7 @@ function gameFinished(){
 
 UI.showFinishedScreen = function(){
     var sorted = vex.players.sort(function(p,p2){return p2.score - p.score});
-    document.getElementById("winning_player").innerHTML = sorted[0].name;
+    document.getElementById("winning_player").textContent = sorted[0].name;
 
     var r = document.getElementById("results");
     var verhaal = "";
@@ -63,6 +49,8 @@ UI.showFinishedScreen = function(){
     document.getElementById("resultcontainer").setAttribute("style", "");
 }
 
+
+
 UI.Scoreboard = {
     update : function(){
         UI.Scoreboard.keepUpdating = 1;
@@ -72,11 +60,11 @@ UI.Scoreboard = {
             if(!UI.Scoreboard.scores[iplayer] || UI.Scoreboard.scores[iplayer] != player.score){
                 var elem = document.getElementById("player_"+player.id);
                 if(elem){
-                    elem.innerHTML = player.name+": "+player.score;
+                    elem.textContent = player.name+": "+player.score;
                 }else{
                     var newElem = document.createElement("div");
                     newElem.setAttribute("id","player_"+player.id);
-                    newElem.innerHTML = player.name+": "+player.score;
+                    newElem.textContent = player.name+": "+player.score;
                     scoreboard.appendChild(newElem);
                 }
                 UI.Scoreboard.scores[iplayer] = player.score;
@@ -101,7 +89,7 @@ UI.PlayerList = {
     addPlayer : function(player){
         var elem = this.protoElem.cloneNode(true);
         elem.setAttribute("id","list_player"+player.id);
-        elem.children[0].innerHTML = player.name;
+        elem.children[0].textContent = player.name;
         this.playerElems[player.id] = elem;
         this.elemVals[player.id] = {};
         this.holderElem.appendChild(elem);
@@ -121,13 +109,20 @@ UI.PlayerList = {
                 vals.hp = 0;
             }
             if(vals.score != player.score){
-                elem.children[2].innerHTML = player.score;
+                elem.children[2].textContent = player.score;
                 vals.score = player.score;
             }
+
         }
     },
     stopUpdate : function(){
         this.keepUpdating = 0;
+    },
+    reset : function(){
+        this.holderElem.innerHTML = "";
+        this.holderElem = {};
+        this.playerElems = [];
+        this.elemVals = [];
     },
     keepUpdating : 1,
     holderElem : {},

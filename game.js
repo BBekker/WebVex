@@ -18,18 +18,31 @@ vex.players = [];
 vex.ships = [];
 vex.bullets = [];
 vex.bOffset = 0;
+prevtime = 0
 
 colors = [[0.9 , 0.1, 0.1, 1.0],[0.1,0.9,0.1,1.0],[0.1,0.1,0.9,1.0]]
 
 vex.init = function(){
 
+    //Reset variables
+    vex.players = [];
+    vex.ships = [];
+    vex.bullets = [];
+    vex.bOffset = 0;
+    prevtime = 0;
+
+    //capture keys
     document.onkeydown = captureKeyDown;
     document.onkeyup = captureKeyUp;
+
+    //Load graphics/shaders
     renderer.init();
-    window.requestAnimationFrame(vex.gameloop);
 }
 
-prevtime = 0;
+vex.start = function(){
+    //start game loop
+    window.requestAnimationFrame(vex.gameloop);
+}
 
 vex.gameloop = function(time){
     if(prevtime == 0)
@@ -132,6 +145,11 @@ vex.collision = function(){
                 vex.bullets.splice(vex.bullets.indexOf(bullet),1); // hyper inefficient remove
                 ship.hp -= bullet.damage;
                 bullet.owner.score += bullet.damage;
+
+                //bonus for a clean kill
+                if(ship.hp < 0){
+                    bullet.owner.score += 100;
+                }
             }
         })
     });
@@ -155,6 +173,12 @@ vex.collision = function(){
 
                 s1.hp -= len*10;
                 s2.hp -= len*10;
+
+                if(s1.hp < 0)
+                    s2.player.score += 100;
+                if(s2.hp < 0)
+                    s1.player.score += 100;
+
                 vex.touching[s1.id] = s2.id;
             }else if(vex.touching[s1.id] == s2.id){
                 vex.touching.splice(s1.id,1);
@@ -253,7 +277,7 @@ Player.prototype = {
         this.ship = ship;
         ship.connectPlayer(this);
     },
-    keys : [38,40,37,39,45], //up, down, left, right, fire
+    keys : [38,40,37,39,32], //up, down, left, right, fire
     name : "",
     shipType : 1,
     acceleration: 0, // 1: forwards, -1 backwards.

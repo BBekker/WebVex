@@ -39,79 +39,35 @@
     </script>
 
     <link rel="stylesheet" href="css.css" />
+    <script src="menu.js"></script>
     <script src="ui.js"></script>
     <script src="glMatrix.js"></script>
     <script src="game.js"></script>
     <script src="renderer.js" ></script>
-
+    <script src="network.js"></script>
 
 
 
 </head>
-<body onload="UI.init()">
+<body onload="showMenu()">
 
-<div id="introcontainer" class="container">
+<div id="menucontainer" class="container">
+    <span id="introText">
     VEX
     <br/><br/>
     Welcome to vex, the 2D party space shooter.
+    </span>
     <br/>
     <br/>
+
 
     Players:
-    <div class="intro_player_selection">
-        <div class="intro_player" id="intro_player_1">
-            <span class="intro_name">
-                player 1
-            </span>
-            <input type="text" name="player_name_1" placeholder="player name">
-            <div id="intro_color">
-
-            </div>
-            <div id="intro_controls">
-
-                Move: arrow-keys </br>
-                Shoot: numpad-0
-            </div>
-        </div>
-        <div class="intro_player" id="intro_player_2">
-            <span class="intro_name">
-                player 2
-            </span>
-            <input type="text" name="player_name_2" placeholder="player name">
-            <div id="intro_color">
-
-            </div>
-            <div id="intro_controls">
-                Move: WASD </br>
-                Shoot: Shift
-            </div>
-        </div>
-        <div class="intro_player inactive" id="intro_player_3">
-            <span class="intro_name">
-                player 3
-            </span>
-            <input type="text" name="player_name_3" placeholder="player name">
-
-            inactive
-        </div>
-        <div class="intro_player inactive" id="intro_player_4">
-            <span class="intro_name">
-                player 4
-            </span>
-            <input type="text" name="player_name_4" placeholder="player name">
-
-            inactive
-        </div>
-        <div class="intro_player inactive" id="intro_player_5">
-            <span class="intro_name">
-                player 5
-            </span>
-            <input type="text" name="player_name_5" placeholder="player name">
-
-            inactive
-        </div>
-
+    <div class="menu_players" id="menu_players">
     </div>
+
+
+
+
 
     <br/>
     <button type="button" onclick="startGame()">Start the game!</input>
@@ -121,19 +77,19 @@
     <span id="winning_player"></span> won!
     <div id="results"></div>
     <br/>
-    Play Again?
+    <span onclick="startGame()">Play Again?</span>
 </div>
 
 <div id="gamecontainer" class="container">
     <div id="scoreboard">
     </div>
     <div id="fps"></div>
-    <canvas id="vex-canv" width="1000" height="800">
+    <canvas id="vex-canv">
         je browser zuigt.
     </canvas>
     <div id="player_list" class="player_list">
-
     </div>
+
 </div>
 
 
@@ -147,11 +103,35 @@
         <span id="score" class="player_score">
             234
         </span>
+
+
         <div class="hp_border">
             <div id="hp" class="player_hp">
             </div>
         </div>
+
+        <div class="energy_border">
+            <div id="energy" class="player_energy">
+            </div>
+        </div>
     </div>
+
+    <div class="intro_player" id="proto_intro_player">
+            <span class="intro_name">
+                player name
+            </span>
+        <input type="text" name="player_name" id="player_name" placeholder="player name">
+        <div id="intro_color">
+
+        </div>
+        <div id="intro_controls">
+
+            Move: arrow-keys </br>
+            Shoot: numpad-0
+        </div>
+    </div>
+
+
 </div>
 
 </body>
