@@ -55,7 +55,7 @@ renderer.init = function init(){
     //load ships into memory
     renderer.loadShips();
     renderer.loadBullets();
-
+    renderer.loadPowerups();
 }
 
 
@@ -64,12 +64,12 @@ renderer.shipObject = {};
 renderer.loadShips = function(){
     //Objects to draw
     renderer.shipObject.vertices = new Float32Array([
-        0, 25.0,
-        15.0,-15.0,
-        0, 25.0,
-        -15.0,-15.0,
-        15.0, -15.0,
-        -15.0,-15.0// Triangle 2
+        25.0, 0.0,
+        -15.0, -15.0,
+        25.0, 0.0,
+        -15.0, 15.0,
+        -15.0, -15.0,
+        -15.0, 15.0
     ]);
 
     //Bookkeeping
@@ -80,6 +80,30 @@ renderer.loadShips = function(){
     renderer.shipObject.vbuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, renderer.shipObject.vbuffer);
     gl.bufferData(gl.ARRAY_BUFFER, renderer.shipObject.vertices, gl.STATIC_DRAW);
+
+}
+
+renderer.powerupObject = {};
+
+renderer.loadPowerups = function(){
+    //Objects to draw
+    renderer.powerupObject.vertices = new Float32Array([
+        25.0, 0.0,
+        -15.0, -15.0,
+        25.0, 0.0,
+        -15.0, 15.0,
+        -15.0, -15.0,
+        -15.0, 15.0
+    ]);
+
+    //Bookkeeping
+    renderer.powerupObject.itemSize = 2;
+    renderer.powerupObject.numItems = renderer.powerupObject.vertices.length / renderer.powerupObject.itemSize;
+
+    //Store data in GPU memory
+    renderer.powerupObject.vbuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, renderer.powerupObject.vbuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, renderer.powerupObject.vertices, gl.STATIC_DRAW);
 
 }
 
@@ -117,6 +141,7 @@ renderer.drawStuff = function drawStuff(){
 
     renderer.drawShips();
     renderer.drawBullets();
+    renderer.drawPowerups();
 }
 
 renderer.drawShips = function(){
@@ -127,7 +152,7 @@ renderer.drawShips = function(){
         //generate transformation matrix
         var transformation = mat4.create();
         mat4.identity(transformation);
-        mat4.rotateZ(mat4.translate(transformation,ship.location),-ship.rotation);
+        mat4.rotateZ(mat4.translate(transformation,ship.location),ship.rotation);
 
         gl.uniform4fv(program.uColor, ship.color);
         gl.uniformMatrix4fv(program.uTransformation, false, transformation);
@@ -153,7 +178,7 @@ renderer.drawBullets = function(){
         mat4.identity(transformation);
         mat4.rotateZ(mat4.translate(transformation,bullet.location),vec3.rotation(bullet.vel));
 
-        gl.uniform4fv(program.uColor, [1.0,1.0,1.0,1.0]);
+        gl.uniform4fv(program.uColor, bullet.owner.color);
         gl.uniformMatrix4fv(program.uTransformation, false, transformation);
 
         //Link shader variable to buffer data
@@ -165,6 +190,29 @@ renderer.drawBullets = function(){
         gl.drawArrays(gl.LINES, 0, renderer.bulletObject.numItems);
     }
 
+}
+
+renderer.drawPowerups = function(){
+    gl.bindBuffer(gl.ARRAY_BUFFER, renderer.powerupObject.vbuffer);
+    for(var ipowerup in vex.powerups){
+        var powerup = vex.powerups[ipowerup];
+
+        //generate transformation matrix
+        var transformation = mat4.create();
+        mat4.identity(transformation);
+        mat4.rotateZ(mat4.translate(transformation,powerup.location),vec3.create(0,0,0));
+
+        gl.uniform4fv(program.uColor, [0.9 , 0.1, 0.1, 1.0]);
+        gl.uniformMatrix4fv(program.uTransformation, false, transformation);
+
+        //Link shader variable to buffer data
+        program.aVertexPosition = gl.getAttribLocation(program, "aVertexPosition");
+        gl.enableVertexAttribArray(program.aVertexPosition);
+        gl.vertexAttribPointer(program.aVertexPosition, renderer.powerupObject.itemSize, gl.FLOAT, false, 0, 0);
+
+        //draw!
+        gl.drawArrays(gl.LINES, 0, renderer.powerupObject.numItems);
+    }
 }
 
 renderer.initShaders = function initShaders(){

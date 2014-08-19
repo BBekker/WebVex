@@ -31,3 +31,9 @@ network.send = function(player){
 network.receive = function(){
 
 }
+
+var dataPacket = {};
+
+network.addDataToPacket = function(key, data){
+    dataPacket[key] = data;
+}

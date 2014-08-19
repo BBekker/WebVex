@@ -19,11 +19,12 @@ wss.on('connection', function (ws) {
     ws.on('message', receive);
     ws.on('close', function(code,message){
         console.log("connection closed id:"+this.uid);
-        delete channels[this.channel].clients[this.uid];
+        channels[this.channel].clients.splice(channels[this.channel].clients.lastIndexOf(this),1);
         broadcastUsers(this.channel);
     });
 
 });
+
 
 function receive(json){
     //this = websocket connection
@@ -64,7 +65,11 @@ function sendMsg(ws, msg){
         msg: msg
     };
     var json = JSON.stringify(obj);
-    ws.send(json);
+    try{
+        ws.send(json);
+    }catch(e){
+        console.log("user: "+ws.uid+" error: "+e);
+    }
 }
 
 function sendResponse(ws, cmd, data){
@@ -74,7 +79,11 @@ function sendResponse(ws, cmd, data){
         data: data
     }
     var json = JSON.stringify(obj);
-    ws.send(json);
+    try{
+        ws.send(json);
+    }catch(e){
+        console.log("user: "+ws.uid+" error: "+e)
+    }
 }
 
 function broadcastUsers(channel){
